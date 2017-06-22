@@ -1,0 +1,1 @@
+chrome.devtools.panels.create("Weasel Record", "weasel.png", "panel.html", function(panel) {});

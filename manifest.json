@@ -1,0 +1,17 @@
+{
+    "name": "Weasel record",
+    "version": "0.1",
+    "description": "A weasel extension for export HAR to the application",
+    "devtools_page": "devtools.html",
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    },
+    "permissions": [
+        "tabs", 
+        "http://*/*",
+        "https://*/*"
+    ],
+    "manifest_version": 2
+}
