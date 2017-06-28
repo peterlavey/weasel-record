@@ -6,10 +6,34 @@
 
 document.querySelector('#record').addEventListener('click', function() {
     chrome.devtools.network.getHAR(function(HAR){
-       document.getElementById('weasel-container').innerHTML = JSON.stringify(HAR);
-       //alert(JSON.stringify(HAR));
+        var arr = [];
+        var base_url = "http://portalcomercial.qa.labchile.cl:8888";
+        HAR.entries.forEach(function(har){
+            if(har.response.content.mimeType === 'application/json'){
+                var data = {};
+                data.name = har.request.startedDateTime.toString();
+                data.path = har.request.url.replace(base_url,'');
+                //data.response = har.response.content.text ? JSON.parse(har.response.content.text) : {};
+                har.request.getContent(function(body){
+                    data.response = JSON.parse(body);
+                    arr.push(data);
+                });
+            }
+        });
+        //document.getElementById('weasel-container').innerHTML = JSON.stringify(HAR);
+        //var myBlob = new Blob([JSON.stringify(arr)], {type : "application/json"});
+        var myBlob = new Blob([JSON.stringify(HAR)], {type : "text/plain"});
+        var url = window.URL.createObjectURL(myBlob);
+        document.getElementById('downloadlink').download = document.getElementById('nameServices').value + '.json';
+        document.getElementById('downloadlink').href = url;
+        document.getElementById('downloadlink').click();
     });
-    //sendObjectToInspectedPage({action: "code", content: "console.log('Inline script executed')"});
+    /*chrome.devtools.network.onRequestFinished.addListener(function(request) {
+        request.getContent(function(body){
+            parsed = JSON.parse(body);
+            document.getElementById('weasel-container').innerHTML = "REQUEST: " + JSON.stringify(request) + "RESPONSE:" + JSON.stringify(parsed);
+        });
+    });*/
 }, false);
 
 document.querySelector('#executescript').addEventListener('click', function() {
